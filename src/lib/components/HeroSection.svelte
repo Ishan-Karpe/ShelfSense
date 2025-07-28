@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Button from './Button.svelte';
 	import heroImage from '/src/assets/hero.png';
 </script>
 
@@ -16,7 +17,7 @@
 			book collection with ease. Whether you're a bookworm, a casual reader, or just looking to keep
 			track of your books, ShelfSense has you covered.
 		</h4>
-		<button>Sign Up</button>
+		<Button href="/register">Sign Up</Button>
 	</div>
 	<img class="hero-image" src={heroImage} alt="" />
 </section>
@@ -36,22 +37,5 @@
 		align-items: flex-start;
 		width: 55%;
 		padding-right: 50px;
-	}
-
-	.hero button {
-		background-color: var(--primary);
-		color: var(--background);
-		border: none;
-		border-radius: 5px;
-		padding: 10px 20px;
-		font-size: 1.2rem;
-		font-weight: 500;
-		cursor: pointer;
-		transition: all 0.3s ease-in-out;
-	}
-
-	.hero button:hover {
-		background-color: var(--primary-dark);
-		transform: scale(1.05);
 	}
 </style>
