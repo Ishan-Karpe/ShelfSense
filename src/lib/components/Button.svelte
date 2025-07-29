@@ -14,6 +14,7 @@
 	interface ButtonProps extends BasicProps {
 		onclick?: (e: MouseEvent) => void;
 		href?: never;
+		type?: 'submit' | 'button'; 
 	}
 
 	// Link-specific props with href attribute
