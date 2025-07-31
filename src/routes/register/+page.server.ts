@@ -1,5 +1,6 @@
-import type { RequestEvent } from '@sveltejs/kit';
-
+import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
+import { createClient } from '@supabase/supabase-js';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, } from '$env/static/public';
 // Define the structure for action response data
 interface ReturnObject {
 	success: boolean;
@@ -50,7 +51,21 @@ export const actions = {
 		}
 
 		// Registration flow.
+		const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY); // create a new supabase client with url, and anonmous key
 
-		return returnObject;
+		const {data, error} = await supabase.auth.signUp({
+			email,
+			password
+		});
+
+		if (error || !data.user) {
+			console.log("There has been an error");
+			console.log(error);
+			returnObject.success = true;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			return fail(400, returnObject as any);
+		  }
+
+		redirect(303, '/private/dashboard');
 	}
 };
