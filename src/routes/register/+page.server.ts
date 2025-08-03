@@ -1,6 +1,4 @@
-import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
-import { createClient } from '@supabase/supabase-js';
-import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY, } from '$env/static/public';
+import { fail, redirect} from '@sveltejs/kit';
 // Define the structure for action response data
 interface ReturnObject {
 	success: boolean;
@@ -8,7 +6,7 @@ interface ReturnObject {
 }
 
 export const actions = {
-	default: async ({ request }: RequestEvent) => {
+	default: async ({ request, locals: {supabase} }) => {
 		// Extract form data from the POST request
 		const formData = await request.formData();
 
@@ -49,9 +47,6 @@ export const actions = {
 			returnObject.success = false;
 			return returnObject;
 		}
-
-		// Registration flow.
-		const supabase = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY); // create a new supabase client with url, and anonmous key
 
 		const {data, error} = await supabase.auth.signUp({
 			email,
