@@ -22,11 +22,11 @@
 				{/each}
 			{/if}
 			{#if isRegistration}
-				<input placeholder="Name" type="text" name="name" />
+				<input placeholder="Name" type="text" name="name" value={form?.name || ""}/>
 			{/if}
-			<input placeholder="Email" type="email" name="email" />
-			<input placeholder="Password" type="password" name="password" />
-			<input placeholder="Confirm Password" type="password" name="passwordConfirmation" />
+			<input placeholder="Email" type="email" name="email" value={form?.email || ""} />
+			<input placeholder="Password" type="password" name="password" value={form?.password || ""}/>
+			<input placeholder="Confirm Password" type="password" name="passwordConfirmation" value={form?.passwordConfirmation || ""} /> <!--password is empty edge case if it doesn't exist, if errors form keeps the orginal data--> 
 			<Button type="submit">{isRegistration ? 'Register' : 'Login'}</Button>
 			<!--will trigger the action that attaches to the auth form, posts the data to an endpoint-->
 			{#if isRegistration}

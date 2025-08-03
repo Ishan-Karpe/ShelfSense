@@ -1,39 +1,29 @@
-import { fail, redirect} from '@sveltejs/kit';
+import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 // Define the structure for action response data
 interface ReturnObject {
 	success: boolean;
+    email: string;
+    password: string;
+    passwordConfirmation?: never;
+    name?: never;
 	errors: string[];
-	name: string;
-	email: string;
-	password: string;
-	passwordConfirmation: string;
 }
 
 export const actions = {
-	default: async ({ request, locals: {supabase} }) => {
+	default: async ({ request, locals: {supabase} }: RequestEvent) => {
 		// Extract form data from the POST request
 		const formData = await request.formData();
 
 		// Get form field values and cast to strings
-		const name = formData.get('name') as string;
 		const email = formData.get('email') as string;
 		const password = formData.get('password') as string;
-		const passwordConfirmation = formData.get('passwordConfirmation') as string;
-
 		// Initialize response object with success state
 		const returnObject: ReturnObject = {
 			success: true,
-			name,
-			email,
-			password,
-			passwordConfirmation,
-			errors: []
+            email,
+            password,
+			errors: [],
 		};
-
-		// Validate name length requirement
-		if (name.length < 3) {
-			returnObject.errors.push('Name has to be at least of length 3 characters.');
-		}
 
 		// Validate email is provided
 		if (!email.length) {
@@ -45,10 +35,6 @@ export const actions = {
 			returnObject.errors.push('Password is required.');
 		}
 
-		// Validate passwords match
-		if (password !== passwordConfirmation) {
-			returnObject.errors.push('Passwords do not match.');
-		}
 
 		// If validation errors exist, mark as failed and return
 		if (returnObject.errors.length) {
@@ -56,7 +42,7 @@ export const actions = {
 			return returnObject;
 		}
 
-		const {data, error} = await supabase.auth.signUp({
+		const {data, error} = await supabase.auth.signInWithPassword({
 			email,
 			password
 		});
@@ -69,4 +55,4 @@ export const actions = {
 
 		redirect(303, '/private/dashboard');
 	}
-};
+}
