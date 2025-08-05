@@ -1,4 +1,4 @@
-import { fail, redirect} from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 // Define the structure for action response data
 interface ReturnObject {
 	success: boolean;
@@ -10,7 +10,7 @@ interface ReturnObject {
 }
 
 export const actions = {
-	default: async ({ request, locals: {supabase} }) => {
+	default: async ({ request, locals: { supabase } }) => {
 		// Extract form data from the POST request
 		const formData = await request.formData();
 
@@ -56,7 +56,7 @@ export const actions = {
 			return returnObject;
 		}
 
-		const {data, error} = await supabase.auth.signUp({
+		const { data, error } = await supabase.auth.signUp({
 			email,
 			password
 		});
@@ -65,7 +65,7 @@ export const actions = {
 			returnObject.success = false;
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			return fail(400, returnObject as any);
-		  }
+		}
 
 		redirect(303, '/private/dashboard');
 	}
