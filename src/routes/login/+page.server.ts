@@ -1,4 +1,6 @@
-import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
+
+import { PUBLIC_FRONTEND_URL } from "$env/static/public";
+import { fail, redirect } from '@sveltejs/kit';
 // Define the structure for action response data
 interface ReturnObject {
 	success: boolean;
@@ -10,7 +12,7 @@ interface ReturnObject {
 }
 
 export const actions = {
-	default: async ({ request, locals: { supabase } }: RequestEvent) => {
+	signInWithPassword: async ({ request, locals: { supabase } }) => {
 		// Extract form data from the POST request
 		const formData = await request.formData();
 
@@ -53,5 +55,21 @@ export const actions = {
 		}
 
 		redirect(303, '/private/dashboard');
-	}
+	},
+	googleLogin: async ({ locals: { supabase } }) => {
+		const { data, error } = await supabase.auth.signInWithOAuth({
+		  provider: "google",
+		  options: {
+			redirectTo: `${PUBLIC_FRONTEND_URL}/auth/callback`,
+		  },
+		});
+	
+		if (error) {
+		  return fail(400, {
+			message: "Something went wrong with Google login",
+		  });
+		}
+	
+		throw redirect(303, data.url);
+	  },
 };
