@@ -1,3 +1,4 @@
+import { goto } from '$app/navigation';
 import type { User, Session, SupabaseClient } from '@supabase/supabase-js';
 import { getContext, setContext } from 'svelte';
 
@@ -25,6 +26,7 @@ export class UserState {
 
     async logout() {
         await this.supabase?.auth.signOut();
+		goto('/') //reminder that goto is for routing
     }
 }
 

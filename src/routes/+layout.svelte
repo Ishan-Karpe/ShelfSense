@@ -14,18 +14,16 @@
 
 	// Get user from session
 	// svelte-ignore state_referenced_locally
-		const user = session?.user || null;
+	const user = session?.user || null;
 
 	// svelte-ignore state_referenced_locally
-		let userState = setUserState({ session, user, supabase });
-
-	$effect(() => {
-		userState.updateState({ session, user, supabase });
-	})
+	let userState = setUserState({ session, user, supabase });
 
 	//effect rune runs once then anytime the session changes
 	$effect(() => {
-		const { data: authData } = supabase.auth.onAuthStateChange((event, newSession) => {
+		const { data: authData } = supabase.auth.onAuthStateChange((_, newSession) => {
+			userState.updateState({ session: newSession, user: newSession?.user || null, supabase });
+
 			if (newSession?.expires_at !== session?.expires_at) {
 				invalidate('supabase:auth');
 			}
