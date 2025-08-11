@@ -2,9 +2,21 @@ import { redirect, type RequestHandler } from '@sveltejs/kit';
 
 export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
 	const code = url.searchParams.get('code');
+	const error = url.searchParams.get('error');
+	const errorDescription = url.searchParams.get('error_description');
+
+	// Handle OAuth errors
+	if (error) {
+		console.error('OAuth error:', error, errorDescription);
+		throw redirect(303, `/login?error=${error}&description=${encodeURIComponent(errorDescription || '')}`);
+	}
 
 	if (code) {
-		await supabase.auth.exchangeCodeForSession(code);
+		const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+		if (exchangeError) {
+			console.error('Code exchange error:', exchangeError);
+			throw redirect(303, '/login?error=exchange_failed');
+		}
 	}
 
 	const sessionData = await supabase.auth.getSession();

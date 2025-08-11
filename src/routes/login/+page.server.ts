@@ -57,6 +57,8 @@ export const actions = {
 		redirect(303, '/private/dashboard');
 	},
 	googleLogin: async ({ locals: { supabase } }) => {
+		console.log('Initiating Google login with redirect to:', `${PUBLIC_FRONTEND_URL}/auth/callback`);
+		
 		const { data, error } = await supabase.auth.signInWithOAuth({
 		  provider: "google",
 		  options: {
@@ -65,11 +67,13 @@ export const actions = {
 		});
 	
 		if (error) {
+		  console.error('Google OAuth error:', error);
 		  return fail(400, {
 			message: "Something went wrong with Google login",
 		  });
 		}
 	
+		console.log('Redirecting to Google OAuth URL:', data.url);
 		throw redirect(303, data.url);
 	  },
 };
