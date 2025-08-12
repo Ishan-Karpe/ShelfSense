@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getUserState } from '$components/state/user-state.svelte';
+	import { getUserState } from '$lib/state/user-state.svelte';
 
 	let userContext = getUserState();
 	let { allBooks } = $derived(userContext);

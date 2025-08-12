@@ -1,14 +1,18 @@
 <script lang="ts">
 	import shelfSenseLogo from '$assets/app-logo.svg';
 	import { Button } from '$components';
-	import { getUserState } from '$components/state/user-state.svelte';
+	import { getUserState } from '$lib/state/user-state.svelte';
 
 	let userContext = getUserState();
-	let {user} = $derived(userContext);
+	let user = $derived(userContext.user);
 	
 	// Debug logging
 	$effect(() => {
-		console.log('Header - user state changed:', user?.email || 'no user');
+		console.log('Header - user state changed:', {
+			user: user?.email || 'no user',
+			userExists: !!user,
+			showingLoginButtons: !user
+		});
 	});
 </script>
 
@@ -30,7 +34,10 @@
 				{user.email}
 			</li>
 			<li>
-				<Button isMenu={true} isSecondary={true} onclick={() => userContext.logout()}>Logout</Button>
+				<Button isMenu={true} isSecondary={true} onclick={() => {
+					console.log('Header - Logout button clicked, calling userContext.logout()');
+					userContext.logout();
+				}}>Logout</Button>
 			</li>
 		</ul>
 		{/if}
