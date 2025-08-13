@@ -7,6 +7,13 @@
 	let { children, data } = $props();
 	let { session, supabase } = $derived(data);
   
+	console.log('🚀 Layout - Initial data:', {
+	  hasSession: !!data.session,
+	  hasSupabase: !!data.supabase,
+	  hasUser: !!data.user,
+	  userEmail: data.user?.email || 'no user'
+	});
+
 	let userState = setUserState({
 	  session: data.session,
 	  supabase: data.supabase,
@@ -14,8 +21,9 @@
 	});
   
 	$effect(() => {
-	  const { data } = supabase.auth.onAuthStateChange((_, newSession) => {
-		userState.updateState({session: newSession, supabase, user: newSession?.user || null})
+	  const { data: authData } = supabase.auth.onAuthStateChange((event, newSession) => {
+		console.log('🔄 Auth state changed:', event, newSession?.user?.email || 'no user');
+		
 		userState.updateState({
 		  session: newSession,
 		  supabase,
@@ -27,7 +35,7 @@
 		}
 	  });
   
-	  return () => data.subscription.unsubscribe();
+	  return () => authData.subscription.unsubscribe();
 	});
   </script>
   
