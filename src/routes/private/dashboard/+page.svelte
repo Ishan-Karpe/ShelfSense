@@ -1,34 +1,50 @@
 <script lang="ts">
 	import { getUserState } from '$lib/state/user-state.svelte';
+	import Icon from '@iconify/svelte';
 
 	let userContext = getUserState();
-	let allBooks = $derived(userContext.allBooks);
-	
-	// Debug logging
-	$effect(() => {
-		console.log('📚 Dashboard - Books updated:', {
-			count: allBooks?.length || 0,
-			books: allBooks
-		});
-	});
+	let { userName } = $derived(userContext);
 </script>
 
-<div>
-	<h1>My Books</h1>
-	<p>Total books: {allBooks?.length || 0}</p>
-	
-	{#if allBooks && allBooks.length > 0}
-		<ul>
-			{#each allBooks as book}
-				<li>
-					<strong>{book.title}</strong>
-					{#if book.author}
-						by {book.author}
-					{/if}
-				</li>
-			{/each}
-		</ul>
-	{:else}
-		<p>No books found. Add some books to your library!</p>
-	{/if}
+<div class="dashboard">
+	<div class="dashboard-header">
+		<a href="/private/scan-shelf" class="add-book">
+			<Icon icon="icons8:plus" width={'72'} height={'72'} />
+			<p>Add a book</p></a
+		>
+		<div class="headline">
+			<h3 class="bold mb-xs">Welcome Back, {userName}</h3>
+			<p>
+				There's nothing quite like the journey a good book can take you on. Have you discovered any
+				new favorites recently?
+			</p>
+		</div>
+	</div>
+
+	<!--book categories-->
 </div>
+
+<style>
+	.dashboard-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		width: 100%;
+	}
+
+	.add-book {
+		display: flex;
+		align-items: center;
+		text-decoration: none;
+	}
+
+	.add-book p {
+		margin-left: 8px;
+	}
+
+	.headline {
+		text-align: right;
+		max-width: 30%;
+		min-width: 300px;
+	}
+</style>
