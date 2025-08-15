@@ -18,3 +18,28 @@
         </li>
 	</ul>
 </nav>
+
+<style>
+    .side-nav {
+        display: flex;
+        height: 100vh;
+        border-right: 1px solid grey;
+        padding-left: calc(4vw+16px);
+        padding-right: 40px;
+        flex: 0 0 auto;
+        position: sticky;
+        top: 0;
+    }
+
+    .side-nav ul {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    ul li:not(:last-of-type) {
+        margin-bottom: 16px;
+    }
+</style>
