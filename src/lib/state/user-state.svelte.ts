@@ -3,13 +3,13 @@ import type { Database } from '$lib/types/database.types';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { getContext, setContext } from 'svelte';
 
-interface UserStateProps {
+export interface UserStateProps {
 	session: Session | null;
 	supabase: SupabaseClient | null;
 	user: User | null;
 }
 
-interface Book {
+export interface Book {
 	author: string | null;
 	cover_image: string | null;
 	created_at: string;

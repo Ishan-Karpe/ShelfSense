@@ -17,7 +17,7 @@
 </script>
 
 <header>
-	<a href="/"> <img class="logo" src={shelfSenseLogo} alt="Go to Home" /></a>
+	<a href={user ? "/private/dashboard" : "/"}> <img class="logo" src={shelfSenseLogo} alt="Go to Home" /></a>
 	<nav>
 		{#if !user}
 		<ul>
