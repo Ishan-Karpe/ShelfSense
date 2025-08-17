@@ -8,7 +8,10 @@ export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
 	// Handle OAuth errors
 	if (error) {
 		console.error('OAuth error:', error, errorDescription);
-		throw redirect(303, `/login?error=${error}&description=${encodeURIComponent(errorDescription || '')}`);
+		throw redirect(
+			303,
+			`/login?error=${error}&description=${encodeURIComponent(errorDescription || '')}`
+		);
 	}
 
 	if (code) {
@@ -32,7 +35,8 @@ export const GET: RequestHandler = async ({ url, locals: { supabase } }) => {
 			.eq('user_id', userId)
 			.single();
 
-		if (selectError && selectError.code !== 'PGRST116') { // postgres 116
+		if (selectError && selectError.code !== 'PGRST116') {
+			// postgres 116
 			return new Response('Failed to check for existing user', { status: 500 });
 		}
 

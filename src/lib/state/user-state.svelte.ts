@@ -28,7 +28,7 @@ export class UserState {
 	supabase = $state<SupabaseClient<Database> | null>(null);
 	user = $state<User | null>(null);
 	allBooks = $state<Book[]>([]);
-  userName = $state<string | null>(null);
+	userName = $state<string | null>(null);
 
 	constructor(data: UserStateProps) {
 		this.updateState(data);
@@ -83,7 +83,7 @@ export class UserState {
 		}
 
 		this.allBooks = booksResponse.data;
-    this.userName = userNamesResponse.data.name;
+		this.userName = userNamesResponse.data.name;
 		// this.allBooks = data || [];
 	}
 

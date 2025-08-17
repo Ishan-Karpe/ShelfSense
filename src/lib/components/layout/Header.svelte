@@ -4,8 +4,8 @@
 	import { getUserState } from '$lib/state/user-state.svelte';
 
 	let userContext = getUserState();
-	let {user, userName} = $derived(userContext);
-	
+	let { user, userName } = $derived(userContext);
+
 	// Debug logging
 	$effect(() => {
 		console.log('Header - user state changed:', {
@@ -17,29 +17,35 @@
 </script>
 
 <header>
-	<a href={user ? "/private/dashboard" : "/"}> <img class="logo" src={shelfSenseLogo} alt="Go to Home" /></a>
+	<a href={user ? '/private/dashboard' : '/'}>
+		<img class="logo" src={shelfSenseLogo} alt="Go to Home" /></a
+	>
 	<nav>
 		{#if !user}
-		<ul>
-			<li>
-				<Button isMenu={true} href="/register">Create Account</Button>
-			</li>
-			<li>
-				<Button isMenu={true} isSecondary={true} href="/login">Login</Button>
-			</li>
-		</ul>
+			<ul>
+				<li>
+					<Button isMenu={true} href="/register">Create Account</Button>
+				</li>
+				<li>
+					<Button isMenu={true} isSecondary={true} href="/login">Login</Button>
+				</li>
+			</ul>
 		{:else}
-		<ul>
-			<li>
-				{userName}
-			</li>
-			<li>
-				<Button isMenu={true} isSecondary={true} onclick={() => {
-					console.log('Header - Logout button clicked, calling userContext.logout()');
-					userContext.logout();
-				}}>Logout</Button>
-			</li>
-		</ul>
+			<ul>
+				<li>
+					{userName}
+				</li>
+				<li>
+					<Button
+						isMenu={true}
+						isSecondary={true}
+						onclick={() => {
+							console.log('Header - Logout button clicked, calling userContext.logout()');
+							userContext.logout();
+						}}>Logout</Button
+					>
+				</li>
+			</ul>
 		{/if}
 	</nav>
 </header>

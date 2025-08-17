@@ -1,5 +1,5 @@
-<script lang='ts'>
-	import {HeroSection} from "$components";
-
+<script lang="ts">
+	import { HeroSection } from '$components';
 </script>
+
 <HeroSection />

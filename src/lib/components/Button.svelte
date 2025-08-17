@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-    // these interfaces make sure you can't accidentally mix button and link properties
+	// these interfaces make sure you can't accidentally mix button and link properties
 
 	// Basic props interface for shared properties
 	interface BasicProps {
@@ -14,7 +14,7 @@
 	interface ButtonProps extends BasicProps {
 		onclick?: (e: MouseEvent) => void;
 		href?: never;
-		type?: 'submit' | 'button'; 
+		type?: 'submit' | 'button';
 	}
 
 	// Link-specific props with href attribute
@@ -58,7 +58,6 @@
 {/if}
 
 <style>
-
 	a {
 		display: block;
 		text-decoration: none;
@@ -68,30 +67,30 @@
 		text-decoration: none;
 	}
 
-    .btn {
-        padding: 12px 24px;
-        min-width: 230px;
-        text-align: center;
-        background-color: black;
-        border-radius: 12px;
-        color: white;
-        border: 1px solid white;
-        font-weight: normal;
-        font-size: 22px;
-    }
+	.btn {
+		padding: 12px 24px;
+		min-width: 230px;
+		text-align: center;
+		background-color: black;
+		border-radius: 12px;
+		color: white;
+		border: 1px solid white;
+		font-weight: normal;
+		font-size: 22px;
+	}
 
-    .btn-secondary {
-        background-color: white;
-        color: black;
-        border: 1px solid black;
-    }
+	.btn-secondary {
+		background-color: white;
+		color: black;
+		border: 1px solid black;
+	}
 
-    .btn-danger {
-        background-color: rgb(136,4,4);
-    }
+	.btn-danger {
+		background-color: rgb(136, 4, 4);
+	}
 
-    .btn-menu {
-        min-width: 150px;
-        padding: 8px 20px;
-    }
+	.btn-menu {
+		min-width: 150px;
+		padding: 8px 20px;
+	}
 </style>

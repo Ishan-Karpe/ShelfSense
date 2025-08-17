@@ -13,23 +13,34 @@
 <div class="default-margin auth-container">
 	<h1 class="mb-l">{isRegistration ? 'Register' : 'Login'}</h1>
 	<div class="form-and-social-login">
-		<form class="auth-form" method="POST" action={isRegistration ? "" : "/login/?/signInWithPassword"}>
+		<form
+			class="auth-form"
+			method="POST"
+			action={isRegistration ? '' : '/login/?/signInWithPassword'}
+		>
 			<p class="auth-hint">
 				{isRegistration ? 'Register' : 'Login'} with your email and password.
 			</p>
 			{#if form && form.errors?.length}
-				{#each form.errors as error} <!--if name is too short, if not a vaild email, etc-->
+				{#each form.errors as error}
+					<!--if name is too short, if not a vaild email, etc-->
 					<div class="auth-error">
 						<p>{error}</p>
 					</div>
 				{/each}
 			{/if}
 			{#if isRegistration}
-				<input placeholder="Name" type="text" name="name" value={form?.name || ""}/>
+				<input placeholder="Name" type="text" name="name" value={form?.name || ''} />
 			{/if}
-			<input placeholder="Email" type="email" name="email" value={form?.email || ""} />
-			<input placeholder="Password" type="password" name="password" value={form?.password || ""}/>
-			<input placeholder="Confirm Password" type="password" name="passwordConfirmation" value={form?.passwordConfirmation || ""} /> <!--password is empty edge case if it doesn't exist, if errors form keeps the orginal data--> 
+			<input placeholder="Email" type="email" name="email" value={form?.email || ''} />
+			<input placeholder="Password" type="password" name="password" value={form?.password || ''} />
+			<input
+				placeholder="Confirm Password"
+				type="password"
+				name="passwordConfirmation"
+				value={form?.passwordConfirmation || ''}
+			/>
+			<!--password is empty edge case if it doesn't exist, if errors form keeps the orginal data-->
 			<Button type="submit">{isRegistration ? 'Register' : 'Login'}</Button>
 			<!--will trigger the action that attaches to the auth form, posts the data to an endpoint-->
 			{#if isRegistration}
@@ -45,7 +56,7 @@
 			{/if}
 		</form>
 		<div class="social-login">
-			<form method='POST' action={isRegistration ? "/login/?/googleLogin" : "?/googleLogin"}>
+			<form method="POST" action={isRegistration ? '/login/?/googleLogin' : '?/googleLogin'}>
 				<Button type="submit">
 					{isRegistration ? 'Register' : 'Login'} with Google
 				</Button>

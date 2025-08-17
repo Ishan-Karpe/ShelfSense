@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	{#each allBooks as book}
-		<BookCard {book}/>
+		<BookCard {book} />
 	{/each}
 	<!--book categories-->
 </div>
