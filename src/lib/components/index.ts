@@ -5,3 +5,4 @@ export { default as AuthForm } from './AuthForm.svelte';
 export { default as SideNav } from './layout/SideNav.svelte';
 export { default as BookCard } from './BookCard.svelte';
 export { default as StarRating } from './StarRating.svelte';
+export {default as BookCategory} from './BookCategory.svelte'

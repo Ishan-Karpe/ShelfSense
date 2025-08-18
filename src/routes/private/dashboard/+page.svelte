@@ -1,10 +1,13 @@
 <script lang="ts">
 	import { BookCard } from '$components';
-	import { getUserState } from '$lib/state/user-state.svelte';
+	import BookCategory from '$components/BookCategory.svelte';
+	import StarRating from '$components/StarRating.svelte';
+	import { getUserState, type Book } from '$lib/state/user-state.svelte';
 	import Icon from '@iconify/svelte';
 
 	let userContext = getUserState();
 	let { userName, allBooks } = $derived(userContext);
+
 </script>
 
 <div class="dashboard">
@@ -21,10 +24,7 @@
 			</p>
 		</div>
 	</div>
-	{#each allBooks as book}
-		<BookCard {book} />
-	{/each}
-	<!--book categories-->
+	<BookCategory booksToDisplay={allBooks.slice(0, 10)} categoryName={"Your Favorite books"} />
 </div>
 
 <style>
