@@ -7,7 +7,7 @@
 	let { children, data } = $props();
 	let { session, supabase } = $derived(data);
 
-	console.log('🚀 Layout - Initial data:', {
+	console.log('Initial data:', {
 		hasSession: !!data.session,
 		hasSupabase: !!data.supabase,
 		hasUser: !!data.user,
