@@ -24,6 +24,8 @@ export interface Book {
 	user_id: string;
 }
 
+type UpdateableBookFields = Omit<Book, "id" | "user_id" | "created_at">;
+
 export class UserState {
 	session = $state<Session | null>(null);
 	supabase = $state<SupabaseClient<Database> | null>(null);
@@ -146,6 +148,28 @@ export class UserState {
 		return this.allBooks
 			.filter((book) => book.genre && book.genre.includes(favoriteGenre))
 			.slice(0, 9);
+	}
+
+	async updateBook(bookId: number, updateObject: Partial<UpdateableBookFields>) {
+		if (!this.supabase) {
+			console.error('No Supabase client found');
+			return;
+		}
+
+		const { status, error } = await this.supabase
+			.from('books')
+			.update(updateObject)
+			.eq('id', bookId);
+
+		if (error) {
+			console.error('Error updating book:', error);
+			return;
+		}
+
+		if (status === 204 && !error) {
+			console.log('Book updated successfully');
+			this.fetchUserData();
+		}
 	}
 
 	async logout() {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Button from '$components/Button.svelte';
 	import StarRating from '$components/StarRating.svelte';
-	import type { Book } from '$lib/state/user-state.svelte';
+	import { getUserState, type Book } from '$lib/state/user-state.svelte';
 	import Icon from '@iconify/svelte';
 
 	interface BookPageProps {
@@ -11,6 +11,7 @@
 	}
 
 	let { data }: BookPageProps = $props();
+	let userContext = getUserState();
 	let book = $derived(data.book);
 	let isEditMode = $state(false);
 	let title = $state(book.title);
@@ -24,6 +25,17 @@
 
 	function toggleEditMode() {
 		isEditMode = !isEditMode;
+	}
+
+	async function updateReadingStatus() {
+		const hasStartedReading = Boolean(book.started_reading_on);
+		const currentTimestamp = new Date().toISOString();
+
+		if (hasStartedReading) {
+			await userContext.updateBook(book.id, {started_reading_on: currentTimestamp})
+		} else {
+			await userContext.updateBook(book.id, {finished_reading_on: currentTimestamp})
+		}
 	}
 </script>
 
@@ -45,7 +57,7 @@
 		</button>
 	{/if}
 	{#if !book.finished_reading_on}
-		<Button isSecondary={true} onclick={() => console.log('Updating reading status')}>
+		<Button isSecondary={true} onclick={updateReadingStatus}>
 			{book.started_reading_on ? 'I Finished Reading this book!' : 'I Started Reading this book!'}
 		</Button>
 	{/if}
@@ -71,7 +83,7 @@
 		<h4 class='mt-m mb-xs semi-bold'>Description</h4>
 		<textarea class='textarea mb-m' name='description' bind:value={book.description}></textarea>
 		{#if !book.finished_reading_on}
-			<Button isSecondary={true} onclick={() => console.log('Updating reading status')}>
+			<Button isSecondary={true} onclick={updateReadingStatus}>
 				{book.started_reading_on ? 'I Finished Reading this book!' : 'I Started Reading this book!'}
 			</Button>
 		{/if}
