@@ -150,6 +150,11 @@ export class UserState {
 			.slice(0, 9);
 	}
 
+
+	getBookById(bookId: number) {
+		return this.allBooks.find((book) => book.id === bookId);
+	}
+
 	async updateBook(bookId: number, updateObject: Partial<UpdateableBookFields>) {
 		if (!this.supabase) {
 			console.error('No Supabase client found');
@@ -167,8 +172,16 @@ export class UserState {
 		}
 
 		if (status === 204 && !error) {
-			console.log('Book updated successfully');
-			this.fetchUserData();
+			this.allBooks = this.allBooks.map((book) => {
+				if (book.id == bookId) {
+					return {
+						...book,
+						...updateObject,
+					};
+				} else {
+					return book;
+				}
+			})
 		}
 	}
 

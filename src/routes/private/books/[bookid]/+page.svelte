@@ -12,18 +12,21 @@
 
 	let { data }: BookPageProps = $props();
 	let userContext = getUserState();
-	let book = $derived(data.book);
+	let book = $derived(userContext.getBookById(data.book.id) || data.book);
 	let isEditMode = $state(false);
-	let title = $state(book.title);
-	let author = $state(book.author);
-	let description = $state(book.description || "");
-	let genre = $state(book.genre || "");
+	let title = $state(data.book.title);
+	let author = $state(data.book.author);
+	let description = $state(data.book.description || "");
+	let genre = $state(data.book.genre || "");
 
 	function goBack() {
 		history.back();
 	}
 
-	function toggleEditMode() {
+	async function toggleEditMode() {
+		if (isEditMode) {
+			await userContext.updateBook(book.id, {title, author, description, genre})
+		}
 		isEditMode = !isEditMode;
 	}
 
@@ -32,10 +35,14 @@
 		const currentTimestamp = new Date().toISOString();
 
 		if (hasStartedReading) {
-			await userContext.updateBook(book.id, {started_reading_on: currentTimestamp})
-		} else {
 			await userContext.updateBook(book.id, {finished_reading_on: currentTimestamp})
+		} else {
+			await userContext.updateBook(book.id, {started_reading_on: currentTimestamp})
 		}
+	}
+
+	async function updateDatabaseRating(newRating: number) {
+		await userContext.updateBook(book.id, {rating: newRating})
 	}
 </script>
 
@@ -43,7 +50,7 @@
 	<h2 class="book-title mt-m">{book.title}</h2>
 	<p class="book-author">by {book.author}</p>
 	<h4 class="mt-m mb-xs semi-bold">Your rating</h4>
-	<StarRating value={book.rating || 0} />
+	<StarRating value={book.rating || 0} {updateDatabaseRating}/>
 	<p class="small-font">
 		Click to {book.rating ? 'change' : 'give'} rating
 	</p>
@@ -76,7 +83,7 @@
 			<input class='input' bind:value={author} type='text' name='author' />
 		</div>
 		<h4 class='mt-m mb-xs semi-bold'>Your Rating</h4>
-		<StarRating value={book.rating || 0} />
+		<StarRating value={book.rating || 0} {updateDatabaseRating}/>
 		<p class='small-font'>
 			Click to {book.rating ? "change" : "give"} rating
 		</p>
