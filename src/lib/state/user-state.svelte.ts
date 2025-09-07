@@ -24,7 +24,7 @@ export interface Book {
 	user_id: string;
 }
 
-type UpdateableBookFields = Omit<Book, "id" | "user_id" | "created_at">;
+type UpdateableBookFields = Omit<Book, 'id' | 'user_id' | 'created_at'>;
 
 export class UserState {
 	session = $state<Session | null>(null);
@@ -150,7 +150,6 @@ export class UserState {
 			.slice(0, 9);
 	}
 
-
 	getBookById(bookId: number) {
 		return this.allBooks.find((book) => book.id === bookId);
 	}
@@ -176,13 +175,35 @@ export class UserState {
 				if (book.id == bookId) {
 					return {
 						...book,
-						...updateObject,
+						...updateObject
 					};
 				} else {
 					return book;
 				}
-			})
+			});
 		}
+	}
+
+	async uploadBookCover(file: File, bookId: number) {
+		if (!this.user || !this.supabase) {
+			return;
+		}
+
+		const filePath = `${this.user.id}/${bookId}/${file.name}`;
+		const { error: uploadError } = await this.supabase.storage
+			.from('book-covers')
+			.upload(filePath, file);
+
+		if (uploadError) {
+			console.error('Error uploading book cover:', uploadError);
+			return;
+		}
+
+		const {
+			data: { publicUrl }
+		} = this.supabase.storage.from('book-covers').getPublicUrl(filePath);
+
+		await this.updateBook(bookId, { cover_image: publicUrl });
 	}
 
 	async logout() {

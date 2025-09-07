@@ -3,6 +3,7 @@
 	import StarRating from '$components/StarRating.svelte';
 	import { getUserState, type Book } from '$lib/state/user-state.svelte';
 	import Icon from '@iconify/svelte';
+	import Dropzone from 'svelte-file-dropzone';
 
 	interface BookPageProps {
 		data: {
@@ -16,8 +17,8 @@
 	let isEditMode = $state(false);
 	let title = $state(data.book.title);
 	let author = $state(data.book.author);
-	let description = $state(data.book.description || "");
-	let genre = $state(data.book.genre || "");
+	let description = $state(data.book.description || '');
+	let genre = $state(data.book.genre || '');
 
 	function goBack() {
 		history.back();
@@ -25,7 +26,7 @@
 
 	async function toggleEditMode() {
 		if (isEditMode) {
-			await userContext.updateBook(book.id, {title, author, description, genre})
+			await userContext.updateBook(book.id, { title, author, description, genre });
 		}
 		isEditMode = !isEditMode;
 	}
@@ -35,14 +36,22 @@
 		const currentTimestamp = new Date().toISOString();
 
 		if (hasStartedReading) {
-			await userContext.updateBook(book.id, {finished_reading_on: currentTimestamp})
+			await userContext.updateBook(book.id, { finished_reading_on: currentTimestamp });
 		} else {
-			await userContext.updateBook(book.id, {started_reading_on: currentTimestamp})
+			await userContext.updateBook(book.id, { started_reading_on: currentTimestamp });
+		}
+	}
+
+	async function handleDrop(e: CustomEvent<any>) {
+		const { acceptedFiles } = e.detail;
+		if (acceptedFiles.length) {
+			const file = acceptedFiles[0] as File;
+			await userContext.uploadBookCover(file, book.id);
 		}
 	}
 
 	async function updateDatabaseRating(newRating: number) {
-		await userContext.updateBook(book.id, {rating: newRating})
+		await userContext.updateBook(book.id, { rating: newRating });
 	}
 </script>
 
@@ -50,7 +59,7 @@
 	<h2 class="book-title mt-m">{book.title}</h2>
 	<p class="book-author">by {book.author}</p>
 	<h4 class="mt-m mb-xs semi-bold">Your rating</h4>
-	<StarRating value={book.rating || 0} {updateDatabaseRating}/>
+	<StarRating value={book.rating || 0} {updateDatabaseRating} />
 	<p class="small-font">
 		Click to {book.rating ? 'change' : 'give'} rating
 	</p>
@@ -77,26 +86,26 @@
 
 {#snippet editFields()}
 	<form>
-		<input class='input input-title mt-m mb-xs' bind:value={title} type='text' name='title' />
-		<div class='input-author'>
+		<input class="input input-title mt-m mb-xs" bind:value={title} type="text" name="title" />
+		<div class="input-author">
 			<p>by</p>
-			<input class='input' bind:value={author} type='text' name='author' />
+			<input class="input" bind:value={author} type="text" name="author" />
 		</div>
-		<h4 class='mt-m mb-xs semi-bold'>Your Rating</h4>
-		<StarRating value={book.rating || 0} {updateDatabaseRating}/>
-		<p class='small-font'>
-			Click to {book.rating ? "change" : "give"} rating
+		<h4 class="mt-m mb-xs semi-bold">Your Rating</h4>
+		<StarRating value={book.rating || 0} {updateDatabaseRating} />
+		<p class="small-font">
+			Click to {book.rating ? 'change' : 'give'} rating
 		</p>
-		<h4 class='mt-m mb-xs semi-bold'>Description</h4>
-		<textarea class='textarea mb-m' name='description' bind:value={book.description}></textarea>
+		<h4 class="mt-m mb-xs semi-bold">Description</h4>
+		<textarea class="textarea mb-m" name="description" bind:value={book.description}></textarea>
 		{#if !book.finished_reading_on}
 			<Button isSecondary={true} onclick={updateReadingStatus}>
 				{book.started_reading_on ? 'I Finished Reading this book!' : 'I Started Reading this book!'}
 			</Button>
 		{/if}
 
-		<h4 class='mt-m mb-xs semi-bold'>Genre</h4>
-		<input class='input' type='text' name='genre' bind:value={genre}>
+		<h4 class="mt-m mb-xs semi-bold">Genre</h4>
+		<input class="input" type="text" name="genre" bind:value={genre} />
 	</form>
 {/snippet}
 
@@ -111,20 +120,27 @@
 			{:else}
 				{@render bookInfo()}
 			{/if}
-			<div class='buttons-container mt-m'>
-				<Button isSecondary={true} onclick={toggleEditMode}>{isEditMode ? "Save changes" : "Edit"}</Button>
-				<Button isDanger={true} onclick={() => console.log("delete the book")}>Delete</Button>
-
+			<div class="buttons-container mt-m">
+				<Button isSecondary={true} onclick={toggleEditMode}
+					>{isEditMode ? 'Save changes' : 'Edit'}</Button
+				>
+				<Button isDanger={true} onclick={() => console.log('delete the book')}>Delete</Button>
 			</div>
 		</div>
 		<div class="book-cover">
 			{#if book.cover_image}
 				<img src={book.cover_image} alt="" />
 			{:else}
-				<button class="add-cover">
+				<Dropzone
+					on:drop={handleDrop}
+					multiple={false}
+					accept="image/*"
+					maxSize={5 * 1024 * 1024}
+					containerClasses={'dropzone-cover'}
+				>
 					<Icon icon="bi:camera-fill" width={'40'} />
 					<p>Add book cover</p>
-				</button>
+				</Dropzone>
 			{/if}
 		</div>
 	</div>
@@ -159,13 +175,6 @@
 		border-radius: inherit;
 	}
 
-	.add-cover {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-	}
-
 	.input {
 		padding: 8px 4px;
 		width: 100%;
@@ -178,7 +187,7 @@
 	.input-title {
 		font-size: 60px;
 		font-weight: bold;
-		font-family: "EB Garamond", serif;
+		font-family: 'EB Garamond', serif;
 	}
 
 	.input-author {
