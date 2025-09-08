@@ -124,7 +124,7 @@
 				<Button isSecondary={true} onclick={toggleEditMode}
 					>{isEditMode ? 'Save changes' : 'Edit'}</Button
 				>
-				<Button isDanger={true} onclick={() => console.log('delete the book')}>Delete</Button>
+				<Button isDanger={true} onclick={() => userContext.deleteBookFromLibrary(book.id)}>Delete</Button>
 			</div>
 		</div>
 		<div class="book-cover">
@@ -198,4 +198,16 @@
 	.input-author p {
 		margin-right: 8px;
 	}
-</style>
+
+	:global(.dropzone-cover) {
+		height: 100%;
+		border-radius: 15px !important;
+		display: flex !important;
+		flex-direction: column !important;
+		align-items: center !important;
+		justify-content: center !important;
+		border: unset !important;
+		cursor: pointer;
+		border-style: soild !important;
+	}
+</style> 
