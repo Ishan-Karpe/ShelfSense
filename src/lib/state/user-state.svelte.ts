@@ -211,7 +211,7 @@ export class UserState {
 			return;
 		}
 
-		const {error, status} = await this.supabase.from('books').delete().eq('id', bookId);
+		const { error, status } = await this.supabase.from('books').delete().eq('id', bookId);
 		if (!error && status === 204) {
 			this.allBooks = this.allBooks.filter((book) => book.id !== bookId);
 		}

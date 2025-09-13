@@ -11,6 +11,8 @@ declare global {
 				session: import('@supabase/supabase-js').Session | null;
 				user: import('@supabase/supabase-js').User | null;
 			}>;
+			session: import('@supabase/supabase-js').Session | null;
+			user: import('@supabase/supabase-js').User | null;
 		}
 		interface PageData {
 			session: import('@supabase/supabase-js').Session | null;

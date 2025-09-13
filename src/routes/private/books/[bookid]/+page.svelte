@@ -124,7 +124,9 @@
 				<Button isSecondary={true} onclick={toggleEditMode}
 					>{isEditMode ? 'Save changes' : 'Edit'}</Button
 				>
-				<Button isDanger={true} onclick={() => userContext.deleteBookFromLibrary(book.id)}>Delete</Button>
+				<Button isDanger={true} onclick={() => userContext.deleteBookFromLibrary(book.id)}
+					>Delete</Button
+				>
 			</div>
 		</div>
 		<div class="book-cover">
@@ -210,4 +212,4 @@
 		cursor: pointer;
 		border-style: soild !important;
 	}
-</style> 
+</style>
