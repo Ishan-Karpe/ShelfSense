@@ -16,9 +16,9 @@ export const POST: RequestHandler = async ({ request }) => {
 			{
 				role: 'user',
 				content: [
-				{
-					type: 'text',
-					text: `In the given image there will be either one book or mulitple books displayed. Please give me back a JSON and ONLY A JSON SO NOTHING ELSE. 
+					{
+						type: 'text',
+						text: `In the given image there will be either one book or mulitple books displayed. Please give me back a JSON and ONLY A JSON SO NOTHING ELSE. 
 					Please only give me back a vaild json since this will be handled internally in a program and will crash if any other text comes back with your response. 
 					
 					What I need as information is the books that you can see in the image in this form:
@@ -33,15 +33,15 @@ export const POST: RequestHandler = async ({ request }) => {
 					"bookAuthor": "J.K. Rowling"
 					}
 					
-					Please also make sure that you return an array, even if there is one book in the image. Thank you!`,
-				},
-				{
-					type: 'image_url',
-					image_url: {
-						url: `data:image/jpeg;base64,${base64}`,
-						detail: "low"
+					Please also make sure that you return an array, even if there is one book in the image. Thank you!`
+					},
+					{
+						type: 'image_url',
+						image_url: {
+							url: `data:image/jpeg;base64,${base64}`,
+							detail: 'low'
+						}
 					}
-				}
 				]
 			}
 		]
@@ -49,8 +49,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	console.log(response.choices[0].message.content);
 
-	const bookArrayString = response.choices[0].message.content?.replace(/```json|```/g, "").trim();
-	const bookArray = JSON.parse(bookArrayString || "");
+	const bookArrayString = response.choices[0].message.content?.replace(/```json|```/g, '').trim();
+	const bookArray = JSON.parse(bookArrayString || '');
 
-	return json({bookArray});
+	return json({ bookArray });
 };
