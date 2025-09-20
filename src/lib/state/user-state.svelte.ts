@@ -10,6 +10,11 @@ export interface UserStateProps {
 	user: User | null;
 }
 
+export interface OpenAIBook {
+	author: string;
+	bookTitle: string;
+}
+
 export interface Book {
 	author: string | null;
 	cover_image: string | null;
@@ -216,6 +221,34 @@ export class UserState {
 			this.allBooks = this.allBooks.filter((book) => book.id !== bookId);
 		}
 		goto('/private/dashboard');
+	}
+
+	async addBooksToLibrary(booksToAdd: OpenAIBook[]) {
+		if (!this.supabase || !this.user) {
+			return;
+		}
+
+		const userId = this.user.id;
+
+		const processedBooks = booksToAdd.map((book) => ({
+			title: book.bookTitle,
+			author: book.author,
+			user_id: userId
+		}));
+
+		const { error } = await this.supabase.from('books').insert(processedBooks);
+		if (error) {
+			console.error('Error adding books to library:', error);
+			return;
+		}
+
+		const { data } = await this.supabase.from('books').select('*').eq('user_id', userId);
+
+		if (!data) {
+			throw new Error('No data returned from database');
+		}
+
+		this.allBooks = data;
 	}
 
 	async logout() {
