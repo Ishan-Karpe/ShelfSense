@@ -41,10 +41,10 @@
 			/>
 		{/if}
 	{:else}
-		<a href='/private/scan-shelf' class='upload-hint mt-l'>
+		<a href="/private/scan-shelf" class="upload-hint mt-l">
 			<h3>You have no books in your library in this moment. Click here to get started!</h3>
-			<div class='mt-m'>
-				<Icon icon='icons8:plus' width={'72'} height={'72'} />
+			<div class="mt-m">
+				<Icon icon="icons8:plus" width={'72'} height={'72'} />
 				<p>Add Books</p>
 			</div>
 		</a>

@@ -30,11 +30,12 @@
 			await userContext.updateAccountData(email, userName);
 		}
 		isEditMode = !isEditMode;
-
 	}
 
 	async function deleteAccount() {
-		const confirmDelete = window.confirm("Are you sure you want to delete your account? This action cannot be undone and deletes all of your data!");
+		const confirmDelete = window.confirm(
+			'Are you sure you want to delete your account? This action cannot be undone and deletes all of your data!'
+		);
 
 		if (confirmDelete) {
 			await userContext.deleteAccount();

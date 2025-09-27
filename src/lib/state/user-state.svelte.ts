@@ -286,16 +286,16 @@ export class UserState {
 		}
 
 		try {
-			const response = await fetch("/api/delete-account", {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: `Bearer ${this.session.access_token}`,
-			},
-		});
-		if (response.ok) {
-			await this.logout();
-			goto("/");
+			const response = await fetch('/api/delete-account', {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${this.session.access_token}`
+				}
+			});
+			if (response.ok) {
+				await this.logout();
+				goto('/');
 			}
 		} catch (error) {
 			console.log(error);

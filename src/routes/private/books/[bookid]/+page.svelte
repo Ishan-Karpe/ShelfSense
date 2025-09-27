@@ -97,7 +97,7 @@
 			Click to {book.rating ? 'change' : 'give'} rating
 		</p>
 		<h4 class="mt-m mb-xs semi-bold">Description</h4>
-		<textarea class="textarea mb-m" name="description" bind:value={book.description}></textarea>
+		<textarea class="textarea mb-m" name="description" bind:value={description}></textarea>
 		{#if !book.finished_reading_on}
 			<Button isSecondary={true} onclick={updateReadingStatus}>
 				{book.started_reading_on ? 'I Finished Reading this book!' : 'I Started Reading this book!'}
