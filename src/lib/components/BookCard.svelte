@@ -46,6 +46,7 @@
 		text-decoration: none;
 		text-align: left;
 		max-width: 450px;
+		width: 360px;
 	}
 
 	.book-cover {

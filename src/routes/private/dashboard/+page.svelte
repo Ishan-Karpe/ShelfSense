@@ -13,7 +13,7 @@
 	<div class="dashboard-header">
 		<a href="/private/scan-shelf" class="add-book">
 			<Icon icon="icons8:plus" width={'72'} height={'72'} />
-			<p>Add a book</p></a
+			<p>Add Books</p></a
 		>
 		<div class="headline">
 			<h3 class="bold mb-xs">Welcome Back, {userName}</h3>
@@ -23,18 +23,32 @@
 			</p>
 		</div>
 	</div>
-	<BookCategory
-		booksToDisplay={userContext.getHighestRatedBooks()}
-		categoryName={'Your Favorite books'}
-	/>
-	<BookCategory
-		booksToDisplay={userContext.getUnreadBooks()}
-		categoryName={'Recently added, unread books'}
-	/>
-	<BookCategory
-		booksToDisplay={userContext.getBooksFromFavoriteGenre()}
-		categoryName={`Books from your favorite genre: ${userContext.getFavoriteGenre()}`}
-	/>
+	{#if allBooks.length > 0}
+		{#if userContext.getHighestRatedBooks().length}
+			<BookCategory
+				booksToDisplay={userContext.getHighestRatedBooks()}
+				categoryName={'Your Favorite books'}
+			/>
+		{/if}
+		<BookCategory
+			booksToDisplay={userContext.getUnreadBooks()}
+			categoryName={'Recently added, unread books'}
+		/>
+		{#if userContext.getFavoriteGenre()}
+			<BookCategory
+				booksToDisplay={userContext.getBooksFromFavoriteGenre()}
+				categoryName={`Books from your favorite genre: ${userContext.getFavoriteGenre()}`}
+			/>
+		{/if}
+	{:else}
+		<a href='/private/scan-shelf' class='upload-hint mt-l'>
+			<h3>You have no books in your library in this moment. Click here to get started!</h3>
+			<div class='mt-m'>
+				<Icon icon='icons8:plus' width={'72'} height={'72'} />
+				<p>Add Books</p>
+			</div>
+		</a>
+	{/if}
 </div>
 
 <style>
@@ -59,5 +73,20 @@
 		text-align: right;
 		max-width: 30%;
 		min-width: 300px;
+	}
+
+	.upload-hint {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		text-decoration: none;
+		width: 100%;
+		flex-direction: column;
+	}
+
+	.upload-hint div {
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 </style>

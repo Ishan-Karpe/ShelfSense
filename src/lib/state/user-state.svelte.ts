@@ -120,7 +120,7 @@ export class UserState {
 	}
 
 	getFavoriteGenre() {
-		if (this.allBooks.length === 0) {
+		if (this.allBooks.filter((book) => book.genre).length === 0) {
 			return '';
 		}
 
@@ -278,6 +278,28 @@ export class UserState {
 	async logout() {
 		await this.supabase?.auth.signOut();
 		goto('/login');
+	}
+
+	async deleteAccount() {
+		if (!this.session) {
+			return;
+		}
+
+		try {
+			const response = await fetch("/api/delete-account", {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${this.session.access_token}`,
+			},
+		});
+		if (response.ok) {
+			await this.logout();
+			goto("/");
+			}
+		} catch (error) {
+			console.log(error);
+		}
 	}
 }
 
