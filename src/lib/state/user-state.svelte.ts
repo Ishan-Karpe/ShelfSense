@@ -339,15 +339,17 @@ export class UserState {
 
 	async logout() {
 		await this.supabase?.auth.signOut();
-		goto('/login');
+		goto('/');
 	}
 
 	async deleteAccount() {
 		if (!this.session) {
+			console.error('No session found for account deletion');
 			return;
 		}
 
 		try {
+			console.log('Attempting to delete account...');
 			const response = await fetch('/api/delete-account', {
 				method: 'DELETE',
 				headers: {
@@ -355,12 +357,24 @@ export class UserState {
 					Authorization: `Bearer ${this.session.access_token}`
 				}
 			});
+
+			console.log('Delete account response status:', response.status);
+
 			if (response.ok) {
+				const result = await response.json();
+				console.log('Account deletion successful:', result);
 				await this.logout();
 				goto('/');
+			} else {
+				const errorData = await response.text();
+				console.error('Account deletion failed:', response.status, errorData);
+				alert(`Account deletion failed: ${errorData}`);
 			}
 		} catch (error) {
-			console.log(error);
+			console.error('Error during account deletion:', error);
+			alert(
+				`Error during account deletion: ${error instanceof Error ? error.message : 'Unknown error'}`
+			);
 		}
 	}
 }

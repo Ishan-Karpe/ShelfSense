@@ -93,7 +93,7 @@
 				type="text"
 				name="userName"
 				bind:value={userName}
-				class="{validationErrors.userName ? 'error' : ''}"
+				class={validationErrors.userName ? 'error' : ''}
 				placeholder="Enter username"
 			/>
 			{#if validationErrors.userName}
@@ -108,7 +108,7 @@
 				type="email"
 				name="email"
 				bind:value={email}
-				class="{validationErrors.email ? 'error' : ''}"
+				class={validationErrors.email ? 'error' : ''}
 				placeholder="Enter email address"
 			/>
 			{#if validationErrors.email}

@@ -34,12 +34,14 @@
 			{/if}
 			<input placeholder="Email" type="email" name="email" value={form?.email || ''} />
 			<input placeholder="Password" type="password" name="password" value={form?.password || ''} />
-			<input
-				placeholder="Confirm Password"
-				type="password"
-				name="passwordConfirmation"
-				value={form?.passwordConfirmation || ''}
-			/>
+			{#if isRegistration}
+				<input
+					placeholder="Confirm Password"
+					type="password"
+					name="passwordConfirmation"
+					value={form?.passwordConfirmation || ''}
+				/>
+			{/if}
 			<!--password is empty edge case if it doesn't exist, if errors form keeps the orginal data-->
 			<Button type="submit">{isRegistration ? 'Register' : 'Login'}</Button>
 			<!--will trigger the action that attaches to the auth form, posts the data to an endpoint-->
