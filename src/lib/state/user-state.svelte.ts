@@ -2,7 +2,7 @@ import { goto } from '$app/navigation';
 import type { Database } from '$lib/types/database.types';
 import type { Session, SupabaseClient, User } from '@supabase/supabase-js';
 import { getContext, setContext } from 'svelte';
-import { SvelteDate } from 'svelte/reactivity';
+import { SvelteDate, SvelteSet } from 'svelte/reactivity';
 
 export interface UserStateProps {
 	session: Session | null;
@@ -37,9 +37,11 @@ export class UserState {
 	user = $state<User | null>(null);
 	allBooks = $state<Book[]>([]);
 	userName = $state<string | null>(null);
+	selectedFavoriteGenre = $state<string | null>(null);
 
 	constructor(data: UserStateProps) {
 		this.updateState(data);
+		this.loadSelectedFavoriteGenre();
 	}
 
 	updateState(data: UserStateProps) {
@@ -92,6 +94,7 @@ export class UserState {
 
 		this.allBooks = booksResponse.data;
 		this.userName = userNamesResponse.data.name;
+		this.loadSelectedFavoriteGenre();
 		// this.allBooks = data || [];
 	}
 
@@ -102,7 +105,13 @@ export class UserState {
 
 		return this.allBooks
 			.filter((book) => book.rating)
-			.toSorted((a, z) => z.rating! - a.rating!)
+			.toSorted((a, z) => {
+				// First sort by rating (highest first)
+				const ratingDiff = z.rating! - a.rating!;
+				if (ratingDiff !== 0) return ratingDiff;
+				// Then by created_at (most recent first)
+				return new SvelteDate(z.created_at).getTime() - new SvelteDate(a.created_at).getTime();
+			})
 			.slice(0, 9);
 	}
 
@@ -145,14 +154,67 @@ export class UserState {
 	}
 
 	getBooksFromFavoriteGenre() {
-		const favoriteGenre = this.getFavoriteGenre();
+		const favoriteGenre = this.selectedFavoriteGenre || this.getFavoriteGenre();
 		if (!favoriteGenre || this.allBooks.length === 0) {
 			return [];
 		}
 
 		return this.allBooks
 			.filter((book) => book.genre && book.genre.includes(favoriteGenre))
+			.toSorted(
+				(a, z) => new SvelteDate(z.created_at).getTime() - new SvelteDate(a.created_at).getTime()
+			)
 			.slice(0, 9);
+	}
+
+	getAllUniqueGenres(): string[] {
+		if (this.allBooks.length === 0) {
+			return [];
+		}
+
+		const genreSet = new SvelteSet<string>();
+
+		this.allBooks.forEach((book) => {
+			if (book.genre) {
+				const genres = book.genre.split(',');
+				genres.forEach((genre) => {
+					const trimmedGenre = genre.trim();
+					if (trimmedGenre) {
+						genreSet.add(trimmedGenre);
+					}
+				});
+			}
+		});
+
+		return Array.from(genreSet).sort();
+	}
+
+	loadSelectedFavoriteGenre() {
+		if (typeof window !== 'undefined' && this.user?.id) {
+			const stored = localStorage.getItem(`favorite_genre_${this.user.id}`);
+			if (stored) {
+				this.selectedFavoriteGenre = stored;
+			}
+		}
+	}
+
+	setSelectedFavoriteGenre(genre: string | null) {
+		this.selectedFavoriteGenre = genre;
+		if (typeof window !== 'undefined' && this.user?.id) {
+			if (genre) {
+				localStorage.setItem(`favorite_genre_${this.user.id}`, genre);
+			} else {
+				localStorage.removeItem(`favorite_genre_${this.user.id}`);
+			}
+		}
+	}
+
+	getSelectedFavoriteGenre(): string | null {
+		return this.selectedFavoriteGenre;
+	}
+
+	getDisplayFavoriteGenre(): string {
+		return this.selectedFavoriteGenre || this.getFavoriteGenre();
 	}
 
 	getBookById(bookId: number) {

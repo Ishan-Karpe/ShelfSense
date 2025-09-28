@@ -19,16 +19,54 @@
 	let author = $state(data.book.author);
 	let description = $state(data.book.description || '');
 	let genre = $state(data.book.genre || '');
+	let validationErrors = $state({
+		title: '',
+		author: '',
+		description: '',
+		genre: ''
+	});
 
 	function goBack() {
 		history.back();
 	}
 
+	function validateFields() {
+		let hasErrors = false;
+
+		// Reset errors
+		validationErrors.title = '';
+		validationErrors.author = '';
+		validationErrors.genre = '';
+
+		// Validate required fields
+		if (!title.trim()) {
+			validationErrors.title = 'Please fill out this field';
+			hasErrors = true;
+		}
+
+		if (!author?.trim()) {
+			validationErrors.author = 'Please fill out this field';
+			hasErrors = true;
+		}
+
+		if (!genre?.trim()) {
+			validationErrors.genre = 'Please fill out this field';
+			hasErrors = true;
+		}
+
+		return !hasErrors;
+	}
+
 	async function toggleEditMode() {
 		if (isEditMode) {
-			await userContext.updateBook(book.id, { title, author, description, genre });
+			if (validateFields()) {
+				await userContext.updateBook(book.id, { title, author, description, genre });
+				isEditMode = false;
+			}
+			// If validation fails, stay in edit mode
+		} else {
+			isEditMode = true;
 		}
-		isEditMode = !isEditMode;
 	}
 
 	async function updateReadingStatus() {
@@ -86,11 +124,29 @@
 
 {#snippet editFields()}
 	<form>
-		<input class="input input-title mt-m mb-xs" bind:value={title} type="text" name="title" />
+		<input
+			class="input input-title mt-m mb-xs {validationErrors.title ? 'error' : ''}"
+			bind:value={title}
+			type="text"
+			name="title"
+			placeholder="Book title"
+		/>
+		{#if validationErrors.title}
+			<p class="error-message">{validationErrors.title}</p>
+		{/if}
 		<div class="input-author">
 			<p>by</p>
-			<input class="input" bind:value={author} type="text" name="author" />
+			<input
+				class="input {validationErrors.author ? 'error' : ''}"
+				bind:value={author}
+				type="text"
+				name="author"
+				placeholder="Author name"
+			/>
 		</div>
+		{#if validationErrors.author}
+			<p class="error-message">{validationErrors.author}</p>
+		{/if}
 		<h4 class="mt-m mb-xs semi-bold">Your Rating</h4>
 		<StarRating value={book.rating || 0} {updateDatabaseRating} />
 		<p class="small-font">
@@ -105,7 +161,16 @@
 		{/if}
 
 		<h4 class="mt-m mb-xs semi-bold">Genre</h4>
-		<input class="input" type="text" name="genre" bind:value={genre} />
+		<input
+			class="input {validationErrors.genre ? 'error' : ''}"
+			type="text"
+			name="genre"
+			bind:value={genre}
+			placeholder="Book genre"
+		/>
+		{#if validationErrors.genre}
+			<p class="error-message">{validationErrors.genre}</p>
+		{/if}
 	</form>
 {/snippet}
 
@@ -211,5 +276,17 @@
 		border: unset !important;
 		cursor: pointer;
 		border-style: soild !important;
+	}
+
+	.input.error {
+		border: 2px solid #dc3545;
+		background-color: #ffeaea;
+	}
+
+	.error-message {
+		color: #dc3545;
+		font-size: 14px;
+		margin: 4px 0 8px 0;
+		font-weight: 500;
 	}
 </style>

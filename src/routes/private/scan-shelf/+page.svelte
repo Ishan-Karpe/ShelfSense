@@ -63,7 +63,7 @@
 	}
 </script>
 
-<h2 class="mt-m mb-l">Take a picture to add books</h2>
+<h2 class="mt-m mb-l">Upload a picture to add books</h2>
 {#if recgonizedBooks.length === 0}
 	<div class="upload-area">
 		<div class="upload-container">

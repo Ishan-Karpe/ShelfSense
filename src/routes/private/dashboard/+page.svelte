@@ -34,10 +34,10 @@
 			booksToDisplay={userContext.getUnreadBooks()}
 			categoryName={'Recently added, unread books'}
 		/>
-		{#if userContext.getFavoriteGenre()}
+		{#if userContext.getDisplayFavoriteGenre()}
 			<BookCategory
 				booksToDisplay={userContext.getBooksFromFavoriteGenre()}
-				categoryName={`Books from your favorite genre: ${userContext.getFavoriteGenre()}`}
+				categoryName={`Books from your favorite genre: ${userContext.getDisplayFavoriteGenre()}`}
 			/>
 		{/if}
 	{:else}
