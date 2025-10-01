@@ -11,11 +11,6 @@
 	let recgonizedBooks = $state<OpenAIBook[]>([]);
 	let booksSuccessfullyAdded = $state(false);
 
-	interface OpenAIBook {
-		author: string;
-		bookTitle: string;
-	}
-
 	async function handleDrop(e: CustomEvent<any>) {
 		const { acceptedFiles } = e.detail;
 
@@ -38,7 +33,10 @@
 				isLoading = false;
 				const result = (await response.json()) as { bookArray: OpenAIBook[] };
 				recgonizedBooks = result.bookArray;
-				console.log(result);
+				console.log('📚 API Response:', result);
+			console.log('📚 First book details:', recgonizedBooks[0]);
+			console.log('📚 Author value:', recgonizedBooks[0]?.author);
+			console.log('📚 Object keys:', Object.keys(recgonizedBooks[0] || {}));
 			} catch (error) {
 				errorMessage = 'Error processing the image. Please try again.';
 			}
@@ -105,7 +103,7 @@
 				{#each recgonizedBooks as book, index}
 					<tr>
 						<td>{book.bookTitle}</td>
-						<td>{book.author}</td>
+						<td>{book.author || book.bookAuthor || 'Unknown'}</td>
 						<td>
 							<button
 								type="button"

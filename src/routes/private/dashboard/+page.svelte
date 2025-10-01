@@ -7,6 +7,13 @@
 
 	let userContext = getUserState();
 	let { userName, allBooks } = $derived(userContext);
+
+	$effect(() => {
+		console.log('📚 Dashboard allBooks:', allBooks.length, 'books');
+		if (allBooks.length > 0) {
+			console.log('📚 First book in dashboard:', allBooks[0]);
+		}
+	});
 </script>
 
 <div class="dashboard">

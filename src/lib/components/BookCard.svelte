@@ -14,6 +14,13 @@
 				? 'Currently Reading'
 				: 'Not Started'
 	);
+
+	console.log('📖 BookCard rendering:', {
+		title: book.title,
+		author: book.author,
+		hasAuthor: !!book.author,
+		authorValue: book.author
+	});
 </script>
 
 <a class="book-card" href={`/private/books/${book.id}`}>
@@ -27,7 +34,7 @@
 	</div>
 	<div class="book-info">
 		<h4>{book.title}</h4>
-		<p class="mb-s">{book.author}</p>
+		<p class="mb-s author-text">{book.author || 'Unknown Author'}</p>
 		<StarRating isReadOnly={true} value={book.rating || 0} />
 	</div>
 </a>
@@ -79,6 +86,12 @@
 		font-size: 14px;
 		font-weight: 400;
 		font-style: italic;
+	}
+
+	.author-text {
+		color: white !important;
+		opacity: 1 !important;
+		display: block !important;
 	}
 
 	.book-status {

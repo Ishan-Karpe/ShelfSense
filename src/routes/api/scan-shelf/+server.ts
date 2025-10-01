@@ -11,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const { base64 } = await request.json();
 
 	const response = await openai.chat.completions.create({
-		model: 'gpt-5-mini',
+		model: 'gpt-4o',
 		messages: [
 			{
 				role: 'user',
@@ -24,13 +24,13 @@ export const POST: RequestHandler = async ({ request }) => {
 					What I need as information is the books that you can see in the image in this form:
 					{
 					"bookTitle": "replace this with title of the book",
-					"bookAuthor": "replace this with author of the book"
+					"author": "replace this with author of the book"
 					}
-					
+
 					Example:
 					{
 					"bookTitle": "Harry Potter and the Deathly Hallows",
-					"bookAuthor": "J.K. Rowling"
+					"author": "J.K. Rowling"
 					}
 					
 					Please also make sure that you return an array, even if there is one book in the image. Thank you!`
@@ -47,10 +47,26 @@ export const POST: RequestHandler = async ({ request }) => {
 		]
 	});
 
-	console.log(response.choices[0].message.content);
+	const rawContent = response.choices[0].message.content;
+	console.log('🤖 OpenAI raw response:', rawContent);
 
-	const bookArrayString = response.choices[0].message.content?.replace(/```json|```/g, '').trim();
+	const bookArrayString = rawContent?.replace(/```json|```/g, '').trim();
 	const bookArray = JSON.parse(bookArrayString || '');
 
-	return json({ bookArray });
+	// Transform bookAuthor to author if OpenAI uses different field name
+	const normalizedBooks = bookArray.map(
+		(book: { bookTitle?: string; title?: string; author?: string; bookAuthor?: string }) => ({
+			bookTitle: book.bookTitle || book.title,
+			author: book.author || book.bookAuthor
+		})
+	);
+
+	console.log('📚 Parsed book array:', bookArray);
+	console.log('✅ Normalized books:', normalizedBooks);
+	console.log('📚 First book structure:', normalizedBooks[0]);
+
+	const responseData = { bookArray: normalizedBooks };
+	console.log('🚀 SENDING TO FRONTEND:', JSON.stringify(responseData, null, 2));
+
+	return json(responseData);
 };

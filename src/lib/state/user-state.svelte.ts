@@ -40,7 +40,13 @@ export class UserState {
 	selectedFavoriteGenre = $state<string | null>(null);
 
 	constructor(data: UserStateProps) {
-		this.updateState(data);
+		this.session = data.session;
+		this.supabase = data.supabase;
+		this.user = data.user;
+
+		if (data.user) {
+			this.fetchUserData();
+		}
 		this.loadSelectedFavoriteGenre();
 	}
 
@@ -91,6 +97,9 @@ export class UserState {
 			console.error('Error fetching user data:', booksResponse.error, userNamesResponse.error);
 			return;
 		}
+
+		console.log('📚 fetchUserData - Books from database:', booksResponse.data);
+		console.log('📚 fetchUserData - First book:', booksResponse.data[0]);
 
 		this.allBooks = booksResponse.data;
 		this.userName = userNamesResponse.data.name;
@@ -292,13 +301,22 @@ export class UserState {
 
 		const userId = this.user.id;
 
+		console.log('📖 Input booksToAdd:', booksToAdd);
+		console.log('📖 First book author field:', booksToAdd[0]?.author);
+
 		const processedBooks = booksToAdd.map((book) => ({
 			title: book.bookTitle,
 			author: book.author,
 			user_id: userId
 		}));
 
-		const { error } = await this.supabase.from('books').insert(processedBooks);
+		console.log('📖 Books to insert:', processedBooks);
+		console.log('📖 First processed book JSON:', JSON.stringify(processedBooks[0], null, 2));
+
+		const { error, data: insertedData } = await this.supabase.from('books').insert(processedBooks).select();
+
+		console.log('✅ Insert result:', insertedData);
+		console.log('❌ Insert error:', error);
 		if (error) {
 			console.error('Error adding books to library:', error);
 			return;
@@ -309,6 +327,9 @@ export class UserState {
 		if (!data) {
 			throw new Error('No data returned from database');
 		}
+
+		console.log('📚 Books fetched from database:', data);
+		console.log('📚 First book from DB:', data[0]);
 
 		this.allBooks = data;
 	}
