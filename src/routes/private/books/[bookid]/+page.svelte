@@ -110,11 +110,6 @@
 			<p>Click to add one.</p>
 		</button>
 	{/if}
-	{#if !book.finished_reading_on}
-		<Button isSecondary={true} onclick={updateReadingStatus}>
-			{book.started_reading_on ? 'I Finished Reading this book!' : 'I Started Reading this book!'}
-		</Button>
-	{/if}
 	{#if book.genre}
 		<h4 class="mt-m mb-xs semi-bold">Genre</h4>
 		<p>{book.genre}</p>
@@ -154,11 +149,6 @@
 		</p>
 		<h4 class="mt-m mb-xs semi-bold">Description</h4>
 		<textarea class="textarea mb-m" name="description" bind:value={description}></textarea>
-		{#if !book.finished_reading_on}
-			<Button isSecondary={true} onclick={updateReadingStatus}>
-				{book.started_reading_on ? 'I Finished Reading this book!' : 'I Started Reading this book!'}
-			</Button>
-		{/if}
 
 		<h4 class="mt-m mb-xs semi-bold">Genre</h4>
 		<input
